@@ -177,6 +177,14 @@ def dial_sheet_d():
         - Cylinder(wr, 2, align=BOTTOM))            # window bezel ring
     for name, px, py, tip, top in post_specs():     # dial FEET recesses
         part -= Pos(px, py, -0.91) * Cylinder(1.15, 0.25, align=BOTTOM)
+    # the three platform screw HEADS (M2x6 pan, Ø4 x 1.4, log 0026) sit
+    # on the platform's dial face and stand through this 1.0 sheet:
+    # Ø4.6 clearance so the dial seats on its post tips, heads showing
+    # 0.3 proud in the face (three small pan heads at 12/4/8-ish — the
+    # honest cost of holding the platform from the dial side; a flush
+    # dial wants countersunk heads + a thicker sheet: aesthetics pass)
+    for sx, sy in PLATFORM_SCREWS:
+        part -= Pos(sx, sy, -5) * Cylinder(2.3, 20, align=BOTTOM)
     for k in range(12):                # hour markers, ENGRAVED 0.35
         a = radians(90 - k * 30)       # (embossed ones would strike the
         mx_, my_ = 66 * c_(a), 66 * s_(a)   # hour hand; paint-fill later)

@@ -6,3 +6,6 @@ pytest>=8
 trimesh>=4
 matplotlib>=3.8
 numpy>=1.26
+
+# 2D escapement kinematics (gate test + tools/probe_escapement.py)
+shapely>=2

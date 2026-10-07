@@ -8,7 +8,7 @@ train — all pocketed into the plate's dial face (log 0013: never floating).
 THE DEPTH GAME (what makes rev C's dial side hard): the plate is 6.5
 thick but its bridge side is already carved — the drum recess floor is
 z2.2 (its plan edge only 12mm from center!), the escapement bay floor is
-z4.0, blind bushings bottom at z3.5, strap pilots at z2.5. A dial pocket
+z4.0, blind bushings bottom at z3.5, strap pilots at z1.8. A dial pocket
 may only go as deep as the local ceiling minus 0.6 web. So parts live in
 four bands, big wheels shallow. AND one axis theorem rules the center:
 the hour pipe SURROUNDS the cannon, so the cannon's gears must sit ABOVE
@@ -43,8 +43,8 @@ dial gate caught it). Ratio 1.5 first = rim at 8.3. QED three stages.
 """
 from math import cos, sin, hypot, radians, pi
 
-from .revc import BAY_FLOOR, PLATE_T, REVC_LAYOUT, RIM, ZC, bay_band, \
-    bay_stations, bridge_pillar_xy, cock_layout_c, lever_layout_c
+from .revc import BAY_FLOOR, PLATE_T, REVC_LAYOUT, RIM, STRAP_PILOT_Z, ZC, \
+    bay_band, bay_stations, bridge_pillar_xy, cock_layout_c, lever_layout_c
 
 # --- bands: (z_lo, z_hi) measured INTO the plate from the dial face ----------
 DIAL_BANDS = {
@@ -103,7 +103,7 @@ def _features():
     for k in ("third", "fourth"):
         f.append((L[k][0], L[k][1], 3.0, PLATE_T - 3.0))       # bushings
     for fx, fy in lv["strap_feet"]:
-        f.append((fx, fy, 2.5, PLATE_T - 4.0))                 # strap pilots
+        f.append((fx, fy, 2.5, STRAP_PILOT_Z))                 # strap pilots
     for ax, ay in list(cock_layout_c()["feet"]) + bridge_pillar_xy():
         f.append((ax, ay, 5.5, 0.0))                           # M3 + hex: forbid
     for az in (30, 150, 270):

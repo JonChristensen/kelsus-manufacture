@@ -44,16 +44,21 @@ mt_a, mt_b = mesh_rots(lay["minute"], lay["third"], Zm, p3)
 R_minute = mt_a + (mt_b - R_third) * p3 / Zm
 bm_a, bm_b = mesh_rots(lay["barrel"], lay["minute"], Zd, pm)
 R_drum = bm_a + (bm_b - R_minute) * pm / Zd
+# the spring's keyway sits opposite its root; the arbor rib must be in it
+R_spring_key = rp.SPRING_C["tab_deg"] + rp.mainspring_layout()["coils"] * 360 + 180
 
 kids = [
     L("mainplate", rp.mainplate_c()),
     L("barrel drum (56t band)", Pos(*lay["barrel"], 0) * Rot(0, 0, R_drum) * rp.drum_c()),
     L("barrel arbor (winding square, dial side)",
-      Pos(*lay["barrel"], 0) * rp.barrel_arbor_c()),
-    L("drum cover", Pos(*lay["barrel"], 0) * rp.drum_cover_c()),
-    L("ratchet (flush in the bridge pocket)",
+      Pos(*lay["barrel"], 0) * Rot(0, 0, R_drum + R_spring_key) * rp.barrel_arbor_c()),
+    L("mainspring (PETG 1.7 strip, log 0028; tab on the drum rib)",
+      Pos(*lay["barrel"], 0) * Rot(0, 0, R_drum) * rp.mainspring_c()),
+    L("drum cover (pin into the mainspring tab)",
+      Pos(*lay["barrel"], 0) * Rot(0, 0, R_drum) * rp.drum_cover_c()),
+    L("ratchet (in the bridge pocket, 1.8 proud)",
       Pos(*lay["barrel"], 0) * rp.ratchet_c()),
-    L("click (M1's flexure, bridge pocket)",
+    L("click (pull-pawl above the bridge)",
       Pos(*lay["barrel"], 0) * Rot(0, 0, rp.click_geometry_c()["angle_deg"])
       * rp.click_c()),
     L("minute arbor: 14t pinion + 80t wheel",
@@ -76,8 +81,12 @@ kids = [
     L("hairspring (slit collet, tab on the stud)",
       Pos(*lay["balance"], 0) * Rot(0, 0, degrees(ck["stud_az"]) )
       * rp.hairspring_c()),
-    L("balance cock (cabochon on top)", rp.balance_cock_c()),
+    L("balance cock (printed endstone)", rp.balance_cock_c()),
 ]
+for _i, (_x, _y, _z, _rz) in enumerate(rp.balance_weight_poses()):
+    kids.append(L(f"M3 nut, balance weight {_i} (NOT printed)",
+                  Pos(lay["balance"][0] + _x, lay["balance"][1] + _y, _z + 0.05)
+                  * Rot(0, 0, _rz) * rp.m3_nut_c()))
 _plates = [s for s in rp.bridge_c().solids() if s.volume > 200]
 for i, s in enumerate(sorted(_plates, key=lambda s: -s.volume)):
     kids.append(L(f"wave bridge (traced){'' if i == 0 else f' piece {i+1}'}", s))
@@ -95,8 +104,15 @@ kids += [
     L("stem + crown (winds by ~9 turns)",
       rp.stem_c().rotate(__import__("build123d").Axis(
           (0, 80, WINDING["stem_z"]), (0, 1, 0)), 48)),
+    L("winding pinion (presses on the stem D-tip, inside the tunnel)",
+      Pos(0, WINDING["pinion_y"] - 1.8, WINDING["stem_z"])
+      * Rot(-90, 0, 0) * Rot(0, 0, 48) * rp.winding_pinion_c()),
     L("stem clip", rp.stem_clip_c()),
 ]
+# the six M2x6 screws (McMaster 94209A343, log 0026) — in the STEP so a
+# head under a moving part is a gate failure, not a bench discovery
+_screw = rp.m2x6_screw_c()
+kids += [L(label, pose * _screw) for label, pose in rp.m2_screw_poses()]
 
 # --- the dial side: phase the 8-mesh chain off the minute arbor ---------------
 DL = DIAL_LAYOUT

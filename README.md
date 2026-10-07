@@ -52,7 +52,9 @@ Print from [`exports/k1/print/`](exports/k1/print/MANIFEST.md): the MANIFEST
 carries per-part orientation, support maps and quantities; the
 [printing guide](docs/k1/printing-guide.md) carries the bench-proven Bambu
 Studio settings. Curated, support-painted Bambu plates live in
-[`exports/k1/print/plates/`](exports/k1/print/plates/README.md).
+[`exports/k1/print/plates/`](exports/k1/print/plates/README.md). Then follow
+the [assembly guide](docs/k1/assembly-guide.md) — stage by stage, each with
+its own inspection gate, from mainspring to a regulated tick.
 
 ## Repository layout
 
